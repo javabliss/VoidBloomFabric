@@ -7,6 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Unzip project
+        run: |
+          rm -rf mod
+          mkdir mod
+          unzip -q project.zip -d mod
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -14,8 +19,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.10.2
-      - run: gradle build --no-daemon
+      - name: Build
+        working-directory: mod
+        run: gradle build --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: voidbloom-mod
-          path: build/libs/*.jar
+          path: mod/build/libs/*.jar
